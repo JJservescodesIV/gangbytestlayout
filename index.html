@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GANG By the Green Block — LIVE</title>
+<style>
+  :root{
+    --brick-1:#6b2d1f;
+    --brick-2:#8a3a26;
+    --brick-3:#4a1f15;
+    --mortar:#2a1a12;
+    --green:#3fa34d;        /* THE green */
+    --green-bright:#5fd071;
+    --green-dark:#1f5a2a;
+    --neon-pink:#ff3ea8;
+    --neon-yellow:#ffe14a;
+    --concrete:#3a3a3a;
+    --rust:#a04a2a;
+    --text:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#000;font-family:'Impact','Arial Black',sans-serif;color:var(--text);overflow:hidden}
+
+  /* fonts approximated via system; use bebas / permanent marker if available */
+  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap');
+  body{font-family:'Inter',sans-serif}
+
+  .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+  .obs{
+    position:relative;
+    aspect-ratio:16/9;
+    width:min(100vw,calc(100vh*16/9));
+    height:min(100vh,calc(100vw*9/16));
+    overflow:hidden;
+    /* BRICK WALL background */
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.4) 0%, rgba(0,0,0,0) 30%),
+      repeating-linear-gradient(
+        0deg,
+        var(--mortar) 0 4px,
+        transparent 4px 60px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        var(--mortar) 0 4px,
+        var(--brick-2) 4px 124px,
+        var(--mortar) 124px 128px,
+        var(--brick-1) 128px 248px
+      );
+    background-size: 100% 100%, 100% 64px, 252px 64px;
+  }
+  /* offset every other row of bricks */
+  .obs::before{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(
+      90deg,
+      transparent 0 124px,
+      var(--mortar) 124px 128px,
+      transparent 128px 252px
+    );
+    background-size:252px 128px;
+    background-position:124px 64px;
+    opacity:.6;
+    pointer-events:none;
+  }
+  /* grime overlay */
+  .obs::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse at 20% 100%, rgba(0,0,0,.5), transparent 50%),
+      radial-gradient(ellipse at 80% 0%, rgba(0,0,0,.6), transparent 60%),
+      radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,.4) 100%);
+    z-index:1;
+  }
+
+  /* ---------- GRAFFITI TITLE ---------- */
+  .graffiti{
+    position:absolute;
+    top:1.5%;left:2%;
+    z-index:5;
+    font-family:'Permanent Marker','Impact',cursive;
+    font-size:5.5vh;
+    line-height:.9;
+    color:var(--green-bright);
+    text-shadow:
+      3px 3px 0 #000,
+      6px 6px 0 var(--green-dark),
+      8px 8px 15px rgba(0,0,0,.8);
+    transform:rotate(-3deg);
+    letter-spacing:.02em;
+    pointer-events:none;
+  }
+  .graffiti .small{
+    display:block;font-size:2.2vh;
+    color:var(--neon-yellow);
+    text-shadow:2px 2px 0 #000;
+    transform:rotate(2deg) translateX(20%);
+    margin-top:-.5vh;
+  }
+  .graffiti .tag{
+    position:absolute;top:-1vh;right:-3vh;
+    font-size:1.6vh;color:var(--neon-pink);
+    transform:rotate(15deg);
+    text-shadow:1px 1px 0 #000;
+  }
+
+  /* spray paint splatter accents */
+  .splatter{
+    position:absolute;width:8vh;height:8vh;
+    border-radius:50%;
+    filter:blur(3px);
+    opacity:.6;
+    pointer-events:none;z-index:2;
+  }
+
+  /* ---------- FIRE ESCAPE TOP BAR ---------- */
+  .fire-escape{
+    position:absolute;
+    top:0;right:0;
+    width:60%;
+    height:7%;
+    z-index:6;
+    display:flex;align-items:center;justify-content:flex-end;
+    gap:1.5vw;
+    padding:0 1.5vw;
+    background:
+      linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 100%);
+    border-bottom:3px solid #000;
+    box-shadow:
+      inset 0 -8px 0 rgba(0,0,0,.8),
+      0 4px 0 #000,
+      0 8px 20px rgba(0,0,0,.6);
+  }
+  /* metal grating pattern */
+  .fire-escape::before{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,transparent 0 8px,rgba(0,0,0,.4) 8px 10px),
+               repeating-linear-gradient(0deg,transparent 0 4px,rgba(255,255,255,.03) 4px 5px);
+    pointer-events:none;
+  }
+
+  .live-tag{
+    position:relative;z-index:2;
+    background:#c81e3a;color:#fff;
+    padding:.4vh .8vw;
+    font-family:'Bebas Neue','Impact',sans-serif;
+    font-size:1.8vh;letter-spacing:.15em;
+    border:2px solid #000;
+    box-shadow:3px 3px 0 #000;
+    display:flex;align-items:center;gap:.4vw;
+  }
+  .live-tag::before{content:'';width:.8vh;height:.8vh;background:#fff;border-radius:50%;animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.2}}
+
+  .stat{
+    position:relative;z-index:2;
+    display:flex;align-items:center;gap:.4vw;
+    color:var(--neon-yellow);
+    font-family:'Bebas Neue','Impact',sans-serif;
+    font-size:2.2vh;letter-spacing:.05em;
+    text-shadow:2px 2px 0 #000;
+  }
+  .stat small{color:#fff;font-size:1.2vh;letter-spacing:.1em;font-family:'Inter';font-weight:800}
+
+  /* ---------- A/C UNIT FRAMES ---------- */
+  /* Each cam is mounted in an AC unit hanging out a window */
+  .ac-unit{
+    position:absolute;
+    background:linear-gradient(180deg,#d8d4c8 0%,#a8a49a 50%,#888479 100%);
+    border:3px solid #000;
+    border-radius:3px;
+    box-shadow:
+      inset 0 -4px 0 rgba(0,0,0,.4),
+      inset 0 4px 0 rgba(255,255,255,.3),
+      8px 8px 0 #000,
+      8px 8px 15px rgba(0,0,0,.5);
+    overflow:visible;
+    z-index:7;
+  }
+  /* AC vent grills at top */
+  .ac-unit::before{
+    content:'';position:absolute;
+    top:-1.5vh;left:5%;right:5%;height:1.5vh;
+    background:
+      linear-gradient(180deg,#888 0%,#555 100%),
+      repeating-linear-gradient(90deg,#000 0 2px,transparent 2px 6px);
+    background-blend-mode:multiply;
+    border:2px solid #000;border-bottom:none;
+    border-radius:3px 3px 0 0;
+  }
+  /* drip from AC */
+  .ac-unit::after{
+    content:'';position:absolute;
+    bottom:-2vh;left:30%;width:3px;height:2vh;
+    background:linear-gradient(180deg,rgba(150,200,255,.8),transparent);
+    animation:drip 3s infinite;
+  }
+  @keyframes drip{
+    0%,90%{opacity:0;height:0}
+    50%{opacity:1;height:2vh}
+    100%{opacity:0;transform:translateY(2vh)}
+  }
+
+  .ac-screen{
+    width:100%;height:100%;
+    background:#000;
+    overflow:hidden;
+    position:relative;
+    border:2px solid #1a1a1a;
+  }
+  .ac-screen .avatar{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Bebas Neue','Impact';
+    font-size:5vh;font-weight:900;color:#000;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    text-shadow:2px 2px 0 rgba(255,255,255,.3);
+  }
+  .ac-name{
+    position:absolute;
+    bottom:-3.2vh;left:0;right:0;
+    background:#000;color:var(--green-bright);
+    padding:.4vh 0;text-align:center;
+    font-family:'Bebas Neue','Impact';
+    font-size:1.6vh;letter-spacing:.1em;
+    border:2px solid var(--green);
+    border-top:none;
+    z-index:2;
+  }
+  .ac-name span{display:block;font-size:1vh;color:#888;letter-spacing:.15em}
+
+  /* talking glow + rattle */
+  .ac-unit.talking{animation:rattle .15s infinite}
+  .ac-unit.talking .ac-screen{box-shadow:inset 0 0 30px var(--green-bright)}
+  .ac-unit.talking .ac-name{background:var(--green);color:#000;border-color:var(--neon-yellow)}
+  @keyframes rattle{
+    0%,100%{transform:translate(0,0)}
+    25%{transform:translate(-1px,1px)}
+    50%{transform:translate(1px,-1px)}
+    75%{transform:translate(-1px,-1px)}
+  }
+
+  /* AC unit positions */
+  #ac1{ top:9%; left:2%; width:14%; aspect-ratio:16/10 }
+  #ac2{ top:9%; left:18%; width:14%; aspect-ratio:16/10 }
+  #ac3{ top:9%; left:34%; width:14%; aspect-ratio:16/10 }
+
+  /* ---------- MAIN WINDOW (big window of the building) ---------- */
+  .window-frame{
+    position:absolute;
+    top:30%; left:2%;
+    width:62%; height:52%;
+    z-index:6;
+    background:#1a0f08;
+    border:6px solid #000;
+    box-shadow:
+      inset 0 0 0 4px #6b4226,
+      inset 0 0 0 8px #000,
+      12px 12px 0 #000,
+      12px 12px 30px rgba(0,0,0,.7);
+    padding:1.5vh;
+  }
+  /* window cross frame */
+  .window-frame::before, .window-frame::after{
+    content:'';position:absolute;background:#000;z-index:3;pointer-events:none;
+  }
+  .window-frame::before{top:50%;left:0;right:0;height:6px;transform:translateY(-50%)}
+  .window-frame::after{top:0;bottom:0;left:50%;width:6px;transform:translateX(-50%)}
+  .window-frame .pane-overlay{
+    position:absolute;inset:1.5vh;z-index:4;pointer-events:none;
+    background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 30%,transparent 70%,rgba(255,255,255,.04) 100%);
+  }
+  .window-frame iframe{width:100%;height:100%;border:0;display:block;background:#000}
+  .window-label{
+    position:absolute;top:-3vh;left:1vh;
+    background:var(--neon-yellow);color:#000;
+    font-family:'Bebas Neue','Impact';
+    font-size:2vh;letter-spacing:.12em;
+    padding:.4vh 1vw;
+    border:3px solid #000;
+    box-shadow:4px 4px 0 #000;
+    transform:rotate(-2deg);
+    z-index:8;
+  }
+
+  /* ---------- BOOMBOX CHAT (right side) ---------- */
+  .boombox{
+    position:absolute;
+    top:9%;right:1.5%;
+    width:24%;height:78%;
+    z-index:7;
+    background:linear-gradient(180deg,#2a2a2a 0%,#1a1a1a 50%,#0f0f0f 100%);
+    border:4px solid #000;
+    border-radius:8px;
+    box-shadow:
+      inset 0 4px 0 rgba(255,255,255,.08),
+      inset 0 -4px 0 rgba(0,0,0,.5),
+      10px 10px 0 #000,
+      10px 10px 25px rgba(0,0,0,.7);
+    display:flex;flex-direction:column;
+    overflow:hidden;
+  }
+  /* boombox handle */
+  .boombox::before{
+    content:'';position:absolute;
+    top:-2vh;left:30%;right:30%;height:2vh;
+    background:#1a1a1a;
+    border:3px solid #000;border-bottom:none;
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  }
+  /* speaker grills decoration */
+  .speaker{
+    width:5vh;height:5vh;border-radius:50%;
+    background:radial-gradient(circle,#0a0a0a 0%,#000 40%,#1a1a1a 60%,#000 100%);
+    border:3px solid #000;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.8),inset 0 0 0 2px #333;
+    position:relative;
+    flex-shrink:0;
+  }
+  .speaker::before{
+    content:'';position:absolute;inset:15%;
+    border-radius:50%;
+    background:repeating-radial-gradient(circle,#000 0 2px,#222 2px 4px);
+  }
+  .speaker.pulse{animation:speakerPulse .3s infinite alternate}
+  @keyframes speakerPulse{from{transform:scale(1)}to{transform:scale(1.05)}}
+
+  .boombox-top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.2vh 1vw .8vh;
+    background:linear-gradient(180deg,#3a3a3a,#1a1a1a);
+    border-bottom:2px solid #000;
+  }
+  .boombox-title{
+    font-family:'Bebas Neue','Impact';
+    color:var(--green-bright);
+    font-size:2vh;letter-spacing:.12em;
+    text-shadow:2px 2px 0 #000;
+  }
+  .boombox-display{
+    margin:.8vh 1vw;
+    background:#0a1a0a;
+    border:3px solid #000;
+    border-radius:3px;
+    padding:.6vh .8vw;
+    display:flex;align-items:center;justify-content:space-between;
+    box-shadow:inset 0 0 10px rgba(0,255,0,.2);
+    font-family:'Courier New',monospace;
+    color:var(--green-bright);
+    font-size:1.3vh;font-weight:700;
+    text-shadow:0 0 8px var(--green-bright);
+  }
+  .boombox-display .eq{display:flex;gap:2px;align-items:flex-end;height:1.5vh}
+  .boombox-display .eq span{
+    width:3px;background:var(--green-bright);
+    box-shadow:0 0 4px var(--green-bright);
+    animation:eq .6s infinite alternate;
+  }
+  .boombox-display .eq span:nth-child(2){animation-delay:.1s}
+  .boombox-display .eq span:nth-child(3){animation-delay:.2s}
+  .boombox-display .eq span:nth-child(4){animation-delay:.3s}
+  .boombox-display .eq span:nth-child(5){animation-delay:.4s}
+  @keyframes eq{from{height:20%}to{height:100%}}
+
+  .chat-feed{
+    flex:1;min-height:0;
+    padding:.6vh 1vw;
+    overflow:hidden;
+    display:flex;flex-direction:column;gap:.5vh;
+    mask-image:linear-gradient(180deg,transparent 0%,#000 8%,#000 100%);
+  }
+  .msg{
+    font-size:1.3vh;line-height:1.35;
+    animation:msgIn .4s ease-out;
+    color:#ddd;
+  }
+  @keyframes msgIn{from{opacity:0;transform:translateX(15px)}to{opacity:1;transform:translateX(0)}}
+  .msg .u{font-family:'Bebas Neue','Impact';font-size:1.4vh;letter-spacing:.05em;margin-right:.4vw}
+  .msg.og .u{color:var(--neon-yellow)}
+  .msg.og .u::before{content:'★ '}
+  .msg.mod .u{color:var(--green-bright)}
+  .msg.mod .u::before{content:'🛡 '}
+  .msg.fam .u{color:var(--neon-pink)}
+  .msg.reg .u{color:#9bc3ff}
+  .msg.crew .u{color:var(--neon-yellow);background:#000;padding:0 .3vw}
+  .msg.crew .u::before{content:'🎙 '}
+  .msg.tip{
+    background:linear-gradient(135deg,var(--neon-yellow),#ff9500);
+    color:#000;font-weight:800;
+    padding:.6vh .8vw;
+    border:2px solid #000;
+    box-shadow:3px 3px 0 #000;
+    border-radius:3px;
+  }
+  .msg.tip .amt{display:block;font-family:'Bebas Neue','Impact';font-size:1.4vh;letter-spacing:.1em}
+  .msg.tip .u{color:#000}
+
+  .speakers-row{
+    display:flex;justify-content:space-around;align-items:center;
+    padding:.8vh 1vw;
+    background:linear-gradient(180deg,#1a1a1a,#000);
+    border-top:2px solid #000;
+  }
+  .knob{
+    width:3vh;height:3vh;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,#666,#222);
+    border:2px solid #000;
+    position:relative;
+  }
+  .knob::after{
+    content:'';position:absolute;
+    top:10%;left:50%;width:2px;height:30%;
+    background:var(--green-bright);
+    transform-origin:bottom center;
+    transform:translateX(-50%) rotate(var(--rot,30deg));
+  }
+
+  /* ---------- STREET-LEVEL TICKER (sidewalk) ---------- */
+  .sidewalk{
+    position:absolute;
+    bottom:0;left:0;right:0;
+    height:9%;z-index:8;
+    background:
+      linear-gradient(180deg,var(--concrete) 0%,#2a2a2a 100%);
+    border-top:4px solid #000;
+    box-shadow:inset 0 4px 0 rgba(255,255,255,.05);
+    display:flex;align-items:stretch;
+    overflow:hidden;
+  }
+  /* sidewalk cracks */
+  .sidewalk::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:
+      linear-gradient(90deg,transparent 25%,rgba(0,0,0,.3) 25.2%,transparent 25.5%),
+      linear-gradient(90deg,transparent 60%,rgba(0,0,0,.3) 60.2%,transparent 60.5%),
+      linear-gradient(180deg,rgba(0,0,0,.3) 0 1px,transparent 1px 100%);
+    background-size:100% 100%, 100% 100%, 100% 33%;
+  }
+  .ticker-tag{
+    background:var(--green);color:#000;
+    padding:0 1.5vw;
+    display:flex;align-items:center;
+    font-family:'Bebas Neue','Impact';
+    font-size:2.4vh;letter-spacing:.15em;
+    border-right:4px solid #000;
+    text-shadow:1px 1px 0 var(--neon-yellow);
+    flex-shrink:0;
+    z-index:2;
+  }
+  .ticker-tag::before{content:'⚠ ';color:#000}
+  .ticker-track{
+    flex:1;display:flex;gap:4vw;
+    align-items:center;
+    animation:scroll 35s linear infinite;
+    white-space:nowrap;
+    font-family:'Bebas Neue','Impact';
+    font-size:2.2vh;letter-spacing:.08em;
+    color:#fff;
+    padding-left:2vw;
+    z-index:2;
+  }
+  .ticker-track b{color:var(--neon-yellow);margin-right:.4vw}
+  .ticker-track span{color:var(--green-bright);font-size:1.6vh}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ---------- PIZZA BOX / SODA CAN UP NEXT ---------- */
+  .stoop{
+    position:absolute;
+    bottom:11%; left:2%;
+    z-index:7;
+    width:62%; height:18%;
+    display:flex;gap:1vw;align-items:flex-start;
+  }
+  .pizza-box{
+    background:#c8954a;
+    border:3px solid #000;
+    width:38%;
+    padding:.8vh 1vw;
+    box-shadow:
+      inset 0 -3px 0 rgba(0,0,0,.3),
+      6px 6px 0 #000;
+    transform:rotate(-1.5deg);
+    position:relative;
+  }
+  .pizza-box::before{
+    content:'TOPIC ON DECK';
+    position:absolute;top:-1vh;right:1vw;
+    background:var(--neon-pink);color:#000;
+    font-family:'Bebas Neue','Impact';
+    font-size:1.4vh;letter-spacing:.1em;
+    padding:.2vh .6vw;
+    border:2px solid #000;
+    transform:rotate(3deg);
+  }
+  .pizza-box h4{
+    font-family:'Permanent Marker','Impact',cursive;
+    font-size:2.4vh;color:#000;
+    line-height:1;
+    margin-bottom:.4vh;
+  }
+  .pizza-box p{
+    font-size:1.3vh;color:#3a1a08;font-weight:700;
+  }
+
+  .soda-cta{
+    flex:1;
+    background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 100%);
+    border:3px solid #000;
+    padding:1vh 1.2vw;
+    transform:rotate(1deg);
+    box-shadow:6px 6px 0 #000;
+    cursor:pointer;
+    position:relative;
+    animation:bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce{
+    0%,100%{transform:rotate(1deg) translateY(0)}
+    50%{transform:rotate(1deg) translateY(-3px)}
+  }
+  .soda-cta b{
+    display:block;
+    font-family:'Permanent Marker','Impact',cursive;
+    font-size:2.4vh;color:#fff;
+    text-shadow:2px 2px 0 #000;
+    line-height:1;
+    margin-bottom:.4vh;
+  }
+  .soda-cta span{
+    display:block;font-size:1.3vh;color:var(--neon-yellow);
+    font-weight:700;text-shadow:1px 1px 0 #000;
+  }
+  .soda-cta::after{
+    content:'TAP IN';
+    position:absolute;top:-1.2vh;right:-1vw;
+    background:var(--neon-yellow);color:#000;
+    font-family:'Bebas Neue','Impact';
+    font-size:1.6vh;letter-spacing:.1em;
+    padding:.3vh .6vw;
+    border:2px solid #000;
+    transform:rotate(8deg);
+    box-shadow:3px 3px 0 #000;
+  }
+
+  /* ---------- POSTER / STAT WALL ---------- */
+  .poster{
+    position:absolute;
+    z-index:5;
+    background:#f5e6c8;
+    border:2px solid #000;
+    padding:.6vh .8vw;
+    font-family:'Permanent Marker','Impact',cursive;
+    color:#000;
+    font-size:1.4vh;
+    box-shadow:3px 3px 0 #000;
+    line-height:1.2;
+  }
+  .poster small{display:block;font-family:'Inter';font-size:1vh;color:#444;font-weight:700}
+
+  /* ---------- ALERT (someone runs by yelling) ---------- */
+  .holler{
+    position:absolute;
+    top:30%; left:-30%;
+    z-index:20;
+    background:var(--neon-pink);
+    color:#000;
+    border:3px solid #000;
+    padding:1.2vh 1.5vw;
+    font-family:'Permanent Marker','Impact',cursive;
+    font-size:2.2vh;
+    box-shadow:6px 6px 0 #000;
+    transform:rotate(-4deg);
+    transition:left .5s cubic-bezier(.2,.9,.3,1.3);
+    max-width:30%;
+  }
+  .holler.show{left:3%}
+  .holler small{
+    display:block;font-family:'Inter';font-size:1.2vh;color:#000;font-weight:800;margin-top:.2vh
+  }
+
+  /* ---------- FLOATING SMOKE / VAPOR ---------- */
+  .smoke{position:absolute;bottom:8%;pointer-events:none;z-index:9;font-size:3vh;opacity:.4}
+
+  /* trash can decoration */
+  .trash{
+    position:absolute;
+    bottom:9%; right:26%;
+    width:5vw; height:8vh;
+    z-index:6;
+    background:linear-gradient(180deg,#3a3a3a 0%,#1a1a1a 100%);
+    border:3px solid #000;
+    border-radius:6px 6px 2px 2px;
+  }
+  .trash::before{
+    content:'';position:absolute;top:-1vh;left:-5%;right:-5%;height:1.2vh;
+    background:#1a1a1a;border:3px solid #000;border-radius:50% 50% 0 0/100% 100% 0 0;
+  }
+  .trash::after{
+    content:'';position:absolute;top:20%;left:10%;right:10%;
+    height:60%;
+    background:repeating-linear-gradient(0deg,transparent 0 6px,rgba(0,0,0,.4) 6px 8px);
+  }
+
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="obs">
+
+    <!-- spray paint splatters -->
+    <div class="splatter" style="top:5%;left:30%;background:var(--neon-pink)"></div>
+    <div class="splatter" style="top:50%;left:65%;background:var(--neon-yellow);width:5vh;height:5vh"></div>
+    <div class="splatter" style="bottom:15%;left:10%;background:var(--green-bright);width:6vh;height:6vh"></div>
+
+    <!-- GRAFFITI LOGO (sprayed on the wall) -->
+    <div class="graffiti">
+      GANG
+      <span class="small">by the green block</span>
+      <span class="tag">EST. '24</span>
+    </div>
+
+    <!-- FIRE ESCAPE TOP BAR -->
+    <div class="fire-escape">
+      <div class="live-tag">LIVE ON THE BLOCK</div>
+      <div class="stat"><span id="viewers">3,217</span><small>HEADS</small></div>
+      <div class="stat"><span id="likes">14.2K</span><small>SHOUTS</small></div>
+      <div class="stat"><span id="time">02:14:08</span><small>ON AIR</small></div>
+    </div>
+
+    <!-- A/C UNIT CAMS -->
+    <div class="ac-unit talking" id="ac1" style="--c1:#5fd071;--c2:#ffe14a">
+      <div class="ac-screen">
+        <div class="avatar">D</div>
+      </div>
+      <div class="ac-name">DEEZY<span>HOST · 4B</span></div>
+    </div>
+
+    <div class="ac-unit" id="ac2" style="--c1:#ff3ea8;--c2:#9b59ff">
+      <div class="ac-screen">
+        <div class="avatar">M</div>
+      </div>
+      <div class="ac-name">MO<span>CO-HOST · 3A</span></div>
+    </div>
+
+    <div class="ac-unit" id="ac3" style="--c1:#5fd0ff;--c2:#3fa34d">
+      <div class="ac-screen">
+        <div class="avatar">T</div>
+      </div>
+      <div class="ac-name">TINY<span>GUEST · STOOP</span></div>
+    </div>
+
+    <!-- BIG WINDOW (main content) -->
+    <div class="window-frame">
+      <div class="window-label">📺 ON THE BLOCK</div>
+      <div class="pane-overlay"></div>
+      <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1" allow="autoplay" allowfullscreen></iframe>
+    </div>
+
+    <!-- POSTERS taped on the wall -->
+    <div class="poster" style="top:10%; left:50%; transform:rotate(4deg)">
+      🍕 SLICE NIGHT FRI<small>$2 a slice · BYO drink</small>
+    </div>
+    <div class="poster" style="top:18%; left:62%; transform:rotate(-3deg);background:#ffb84a">
+      LOST CAT — MIDNIGHT<small>black, no collar · call 4B</small>
+    </div>
+
+    <!-- STOOP: pizza box topic + green soda can CTA -->
+    <div class="stoop">
+      <div class="pizza-box">
+        <h4 id="topicTitle">Beef in the group chat</h4>
+        <p id="topicSub">Topic 3 of 6 · the chat picked it</p>
+      </div>
+      <div class="soda-cta">
+        <b>SUB & TAP IN</b>
+        <span>new ep every Thursday — don't miss it</span>
+      </div>
+    </div>
+
+    <!-- BOOMBOX CHAT -->
+    <div class="boombox">
+      <div class="boombox-top">
+        <div class="speaker pulse"></div>
+        <div class="boombox-title">▶ THE STOOP</div>
+        <div class="speaker pulse"></div>
+      </div>
+      <div class="boombox-display">
+        <span>NOW PLAYING · CHAT.FM</span>
+        <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="chat-feed" id="chatFeed"></div>
+      <div class="speakers-row">
+        <div class="knob" style="--rot:-30deg"></div>
+        <div class="speaker"></div>
+        <div class="knob" style="--rot:60deg"></div>
+        <div class="speaker"></div>
+        <div class="knob" style="--rot:120deg"></div>
+      </div>
+    </div>
+
+    <!-- TRASH CAN decoration -->
+    <div class="trash"></div>
+
+    <!-- SMOKE -->
+    <div class="smoke" style="left:15%">💨</div>
+    <div class="smoke" style="left:55%">💨</div>
+
+    <!-- HOLLER ALERT (slides in like someone yelling from down the block) -->
+    <div class="holler" id="holler">
+      🗣 YO! @<span id="hollerName">bigshawn</span> just dropped <span id="hollerAmt">$20</span>!
+      <small id="hollerMsg">"y'all the realest on YT"</small>
+    </div>
+
+    <!-- SIDEWALK TICKER -->
+    <div class="sidewalk">
+      <div class="ticker-tag">WORD ON THE BLOCK</div>
+      <div class="ticker-track" id="ticker">
+        <span><b>HOT:</b> Deezy almost fought a pigeon last week — clip in description</span>
+        <span><b>NEW:</b> Merch drop SUNDAY · "Green Block" hoodies $40</span>
+        <span><b>POLL:</b> 68% say Mo's takes are mid 💀 vote in chat</span>
+        <span><b>SHOUT:</b> 4B's wifi finally fixed thank god</span>
+        <span><b>LINK:</b> patreon.com/greenblock for the after-show</span>
+        <span><b>HOT:</b> Deezy almost fought a pigeon last week — clip in description</span>
+        <span><b>NEW:</b> Merch drop SUNDAY · "Green Block" hoodies $40</span>
+        <span><b>POLL:</b> 68% say Mo's takes are mid 💀 vote in chat</span>
+        <span><b>SHOUT:</b> 4B's wifi finally fixed thank god</span>
+        <span><b>LINK:</b> patreon.com/greenblock for the after-show</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ------- CHAT ------- */
+const users = [
+  {n:'4B_DEEZY',c:'crew'},{n:'mo_FROM_3A',c:'crew'},
+  {n:'mod_unc',c:'mod'},{n:'mod_keisha',c:'mod'},
+  {n:'OG_ray',c:'og'},{n:'OG_dee',c:'og'},
+  {n:'lil_terrance',c:'fam'},{n:'auntie_b',c:'fam'},{n:'cuz_ron',c:'fam'},
+  {n:'random_brian',c:'reg'},{n:'lurker_07',c:'reg'},{n:'first_timer',c:'reg'},
+  {n:'queens_sherry',c:'reg'},{n:'bx_micah',c:'reg'},{n:'philly_jon',c:'reg'},
+  {n:'detroit_kev',c:'fam'},{n:'oakland_t',c:'reg'}
+];
+const lines = [
+  'aye 👋','first time tuning in this is FIRE','Tiny stay quiet but cookin',
+  'Mo wrong for that 😭😭','y\'all the only show I watch live',
+  'where the merch at fr','run it back','put some respect on Deezy name',
+  'this beat in the boombox slap','chat gone CRAZY tonight',
+  'lemme get a shoutout 🙏','from london 🇬🇧','from atl 🇺🇸',
+  'green block forever','4B THE REALEST','3A in shambles 💀',
+  'send link to last week ep','🤣🤣🤣🤣','nah Mo cooking actually',
+  'pizza box topic was wild last week','tell Tiny stop hiding',
+  'when the after show drop','subscribed today!! 🔔','🐐 🐐 🐐',
+  'the AC be dripping fr','can we vote on next topic','POLL POLL POLL',
+  'rent due in 4B 😬','put the pigeon clip back up','aunty in chat heyyy 👋'
+];
+const tips = [
+  {u:'bigshawn',a:'$20',m:'y\'all the realest on YT'},
+  {u:'queen_neecy',a:'$5',m:'love from harlem 💚'},
+  {u:'ceo_vibes',a:'$50',m:'merch drop better be 🔥'},
+  {u:'unc_pat',a:'$10',m:'tell Mo he wrong'},
+  {u:'la_marcus',a:'$15',m:'west coast tuned in'},
+  {u:'first_timer',a:'$2',m:'just found this show 😭'}
+];
+const crewLines = {
+  '4B_DEEZY':['chat behave','Mo you tweakin','aye Tiny say something 😂','y\'all heard that?','💯','run it'],
+  'mo_FROM_3A':['NAH','I\'m telling y\'all','Deezy ain\'t ready','😂😂😂','listen LISTEN'],
+};
+
+const feed = document.getElementById('chatFeed');
+const MAX = 11;
+function pushMsg(node){
+  feed.appendChild(node);
+  while(feed.children.length>MAX) feed.removeChild(feed.firstChild);
+}
+function chatLine(){
+  const u = users[Math.floor(Math.random()*users.length)];
+  const text = (crewLines[u.n] && Math.random()<0.6)
+    ? crewLines[u.n][Math.floor(Math.random()*crewLines[u.n].length)]
+    : lines[Math.floor(Math.random()*lines.length)];
+  const d = document.createElement('div');
+  d.className = `msg ${u.c}`;
+  d.innerHTML = `<span class="u">${u.n}</span>${text}`;
+  pushMsg(d);
+}
+function tipLine(){
+  const t = tips[Math.floor(Math.random()*tips.length)];
+  const d = document.createElement('div');
+  d.className='msg tip';
+  d.innerHTML=`<span class="amt">💵 TIP · ${t.a}</span><span class="u">${t.u}</span> ${t.m}`;
+  pushMsg(d);
+  showHoller(t);
+}
+
+for(let i=0;i<MAX;i++) chatLine();
+setInterval(()=>{
+  if(Math.random()<0.07) tipLine();
+  else chatLine();
+},1000);
+
+/* ------- COUNTERS ------- */
+let v=3217, l=14200;
+setInterval(()=>{
+  v += Math.floor(Math.random()*20)-7;
+  l += Math.floor(Math.random()*5);
+  document.getElementById('viewers').textContent = v.toLocaleString();
+  document.getElementById('likes').textContent = (l>=1000? (l/1000).toFixed(1)+'K' : l);
+},1500);
+
+let secs=8048;
+setInterval(()=>{
+  secs++;
+  const h=String(Math.floor(secs/3600)).padStart(2,'0');
+  const m=String(Math.floor((secs%3600)/60)).padStart(2,'0');
+  const s=String(secs%60).padStart(2,'0');
+  document.getElementById('time').textContent=`${h}:${m}:${s}`;
+},1000);
+
+/* ------- TALKING (which AC unit rattles) ------- */
+const acs = [document.getElementById('ac1'),document.getElementById('ac2'),document.getElementById('ac3')];
+setInterval(()=>{
+  acs.forEach(a=>a.classList.remove('talking'));
+  if(Math.random()<.85){
+    acs[Math.floor(Math.random()*3)].classList.add('talking');
+  }
+},1700);
+
+/* ------- HOLLER ALERT ------- */
+const hollerEl = document.getElementById('holler');
+function showHoller(t){
+  document.getElementById('hollerName').textContent=t.u;
+  document.getElementById('hollerAmt').textContent=t.a;
+  document.getElementById('hollerMsg').textContent=`"${t.m}"`;
+  hollerEl.classList.add('show');
+  setTimeout(()=>hollerEl.classList.remove('show'),5000);
+}
+
+/* ------- TOPICS rotate (pizza box) ------- */
+const topics=[
+  {t:'Beef in the group chat',s:'Topic 3 of 6 · the chat picked it'},
+  {t:'Worst neighbors EVER',s:'Topic 4 of 6 · stories from chat'},
+  {t:'Y\'all still using cash app?',s:'Topic 5 of 6 · poll incoming'},
+  {t:'Best slice in the city',s:'Topic 6 of 6 · finale 🍕'},
+  {t:'Who really run the block',s:'Bonus round · members only'}
+];
+let ti=0;
+setInterval(()=>{
+  ti=(ti+1)%topics.length;
+  document.getElementById('topicTitle').textContent=topics[ti].t;
+  document.getElementById('topicSub').textContent=topics[ti].s;
+},9000);
+</script>
+</body>
+</html>
