@@ -4,45 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GANG By the Green Block — LIVE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --brick-1:#6b2d1f;
-    --brick-2:#8a3a26;
-    --brick-3:#4a1f15;
-    --mortar:#2a1a12;
-    --green:#3fa34d;        /* THE green */
-    --green-bright:#5fd071;
-    --green-dark:#1f5a2a;
-    --neon-pink:#ff3ea8;
-    --neon-yellow:#ffe14a;
-    --concrete:#3a3a3a;
-    --rust:#a04a2a;
-    --text:#fff;
+    --brick-1:#6b2d1f; --brick-2:#8a3a26; --brick-3:#4a1f15; --mortar:#2a1a12;
+    --green:#3fa34d; --green-bright:#5fd071; --green-dark:#1f5a2a;
+    --neon-pink:#ff3ea8; --neon-yellow:#ffe14a;
+    --concrete:#3a3a3a; --wood:#5a3820; --wood-d:#3a200f; --wood-l:#7a4a28;
+    --curtain:#5a1a2a; --curtain-d:#3a0a18;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:#000;font-family:'Impact','Arial Black',sans-serif;color:var(--text);overflow:hidden}
-
-  /* fonts approximated via system; use bebas / permanent marker if available */
-  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap');
-  body{font-family:'Inter',sans-serif}
+  html,body{height:100%;background:#000;font-family:'Inter',sans-serif;color:#fff;overflow:hidden}
 
   .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
   .obs{
-    position:relative;
-    aspect-ratio:16/9;
+    position:relative; aspect-ratio:16/9;
     width:min(100vw,calc(100vh*16/9));
     height:min(100vh,calc(100vw*9/16));
     overflow:hidden;
-    /* BRICK WALL background */
     background:
       linear-gradient(180deg, rgba(0,0,0,.4) 0%, rgba(0,0,0,0) 30%),
-      repeating-linear-gradient(
-        0deg,
-        var(--mortar) 0 4px,
-        transparent 4px 60px
-      ),
-      repeating-linear-gradient(
-        90deg,
+      repeating-linear-gradient(0deg, var(--mortar) 0 4px, transparent 4px 60px),
+      repeating-linear-gradient(90deg,
         var(--mortar) 0 4px,
         var(--brick-2) 4px 124px,
         var(--mortar) 124px 128px,
@@ -50,21 +34,14 @@
       );
     background-size: 100% 100%, 100% 64px, 252px 64px;
   }
-  /* offset every other row of bricks */
   .obs::before{
-    content:'';position:absolute;inset:0;
-    background:repeating-linear-gradient(
-      90deg,
-      transparent 0 124px,
-      var(--mortar) 124px 128px,
-      transparent 128px 252px
-    );
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(90deg,
+      transparent 0 124px, var(--mortar) 124px 128px, transparent 128px 252px);
     background-size:252px 128px;
     background-position:124px 64px;
     opacity:.6;
-    pointer-events:none;
   }
-  /* grime overlay */
   .obs::after{
     content:'';position:absolute;inset:0;pointer-events:none;
     background:
@@ -74,258 +51,562 @@
     z-index:1;
   }
 
-  /* ---------- GRAFFITI TITLE ---------- */
+  /* ---------- GRAFFITI LOGO ---------- */
   .graffiti{
-    position:absolute;
-    top:1.5%;left:2%;
-    z-index:5;
-    font-family:'Permanent Marker','Impact',cursive;
-    font-size:5.5vh;
-    line-height:.9;
-    color:var(--green-bright);
-    text-shadow:
-      3px 3px 0 #000,
-      6px 6px 0 var(--green-dark),
-      8px 8px 15px rgba(0,0,0,.8);
-    transform:rotate(-3deg);
-    letter-spacing:.02em;
-    pointer-events:none;
+    position:absolute; top:1.5%; left:2%; z-index:5;
+    font-family:'Permanent Marker',cursive;
+    font-size:5vh; line-height:.9; color:var(--green-bright);
+    text-shadow:3px 3px 0 #000,6px 6px 0 var(--green-dark),8px 8px 15px rgba(0,0,0,.8);
+    transform:rotate(-3deg); letter-spacing:.02em; pointer-events:none;
   }
   .graffiti .small{
-    display:block;font-size:2.2vh;
-    color:var(--neon-yellow);
+    display:block;font-size:2vh;color:var(--neon-yellow);
     text-shadow:2px 2px 0 #000;
-    transform:rotate(2deg) translateX(20%);
-    margin-top:-.5vh;
+    transform:rotate(2deg) translateX(20%);margin-top:-.5vh;
   }
   .graffiti .tag{
     position:absolute;top:-1vh;right:-3vh;
-    font-size:1.6vh;color:var(--neon-pink);
-    transform:rotate(15deg);
-    text-shadow:1px 1px 0 #000;
+    font-size:1.5vh;color:var(--neon-pink);
+    transform:rotate(15deg);text-shadow:1px 1px 0 #000;
   }
-
-  /* spray paint splatter accents */
   .splatter{
-    position:absolute;width:8vh;height:8vh;
-    border-radius:50%;
-    filter:blur(3px);
-    opacity:.6;
-    pointer-events:none;z-index:2;
+    position:absolute;width:8vh;height:8vh;border-radius:50%;
+    filter:blur(3px);opacity:.6;pointer-events:none;z-index:2;
   }
 
-  /* ---------- FIRE ESCAPE TOP BAR ---------- */
+  /* ---------- TOP BAR / FIRE ESCAPE ---------- */
   .fire-escape{
-    position:absolute;
-    top:0;right:0;
-    width:60%;
-    height:7%;
-    z-index:6;
+    position:absolute;top:0;right:0;width:60%;height:7%;z-index:6;
     display:flex;align-items:center;justify-content:flex-end;
-    gap:1.5vw;
-    padding:0 1.5vw;
-    background:
-      linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 100%);
+    gap:1.5vw;padding:0 1.5vw;
+    background:linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 100%);
     border-bottom:3px solid #000;
-    box-shadow:
-      inset 0 -8px 0 rgba(0,0,0,.8),
-      0 4px 0 #000,
-      0 8px 20px rgba(0,0,0,.6);
+    box-shadow:inset 0 -8px 0 rgba(0,0,0,.8),0 4px 0 #000,0 8px 20px rgba(0,0,0,.6);
   }
-  /* metal grating pattern */
   .fire-escape::before{
     content:'';position:absolute;inset:0;
     background:repeating-linear-gradient(90deg,transparent 0 8px,rgba(0,0,0,.4) 8px 10px),
                repeating-linear-gradient(0deg,transparent 0 4px,rgba(255,255,255,.03) 4px 5px);
     pointer-events:none;
   }
-
   .live-tag{
     position:relative;z-index:2;
-    background:#c81e3a;color:#fff;
-    padding:.4vh .8vw;
-    font-family:'Bebas Neue','Impact',sans-serif;
-    font-size:1.8vh;letter-spacing:.15em;
-    border:2px solid #000;
-    box-shadow:3px 3px 0 #000;
+    background:#c81e3a;color:#fff;padding:.4vh .8vw;
+    font-family:'Bebas Neue',sans-serif;font-size:1.8vh;letter-spacing:.15em;
+    border:2px solid #000;box-shadow:3px 3px 0 #000;
     display:flex;align-items:center;gap:.4vw;
   }
   .live-tag::before{content:'';width:.8vh;height:.8vh;background:#fff;border-radius:50%;animation:blink 1s infinite}
   @keyframes blink{50%{opacity:.2}}
-
   .stat{
-    position:relative;z-index:2;
-    display:flex;align-items:center;gap:.4vw;
-    color:var(--neon-yellow);
-    font-family:'Bebas Neue','Impact',sans-serif;
-    font-size:2.2vh;letter-spacing:.05em;
-    text-shadow:2px 2px 0 #000;
+    position:relative;z-index:2;display:flex;align-items:center;gap:.4vw;
+    color:var(--neon-yellow);font-family:'Bebas Neue',sans-serif;
+    font-size:2.2vh;letter-spacing:.05em;text-shadow:2px 2px 0 #000;
   }
   .stat small{color:#fff;font-size:1.2vh;letter-spacing:.1em;font-family:'Inter';font-weight:800}
 
-  /* ---------- A/C UNIT FRAMES ---------- */
-  /* Each cam is mounted in an AC unit hanging out a window */
-  .ac-unit{
+  /* ---------- WINDOW HOUSINGS (3 cam windows w/ A/C hanging out) ---------- */
+  .winhouse{
     position:absolute;
-    background:linear-gradient(180deg,#d8d4c8 0%,#a8a49a 50%,#888479 100%);
-    border:3px solid #000;
-    border-radius:3px;
+    z-index:6;
+    background:#2a160a;
+    border:4px solid var(--wood-d);
     box-shadow:
-      inset 0 -4px 0 rgba(0,0,0,.4),
-      inset 0 4px 0 rgba(255,255,255,.3),
+      inset 0 0 0 3px var(--wood),
+      inset 0 0 0 6px var(--wood-d),
       8px 8px 0 #000,
-      8px 8px 15px rgba(0,0,0,.5);
-    overflow:visible;
-    z-index:7;
+      8px 12px 25px rgba(0,0,0,.7);
+    padding:0;
+    display:flex;flex-direction:column;
   }
-  /* AC vent grills at top */
-  .ac-unit::before{
-    content:'';position:absolute;
-    top:-1.5vh;left:5%;right:5%;height:1.5vh;
-    background:
-      linear-gradient(180deg,#888 0%,#555 100%),
-      repeating-linear-gradient(90deg,#000 0 2px,transparent 2px 6px);
-    background-blend-mode:multiply;
-    border:2px solid #000;border-bottom:none;
-    border-radius:3px 3px 0 0;
+  /* upper sash with blinds */
+  .upper-sash{
+    flex:1; position:relative;
+    background:linear-gradient(180deg,#1a2030 0%,#2a3548 50%,#1a2030 100%);
+    overflow:hidden;
+    border-bottom:5px solid var(--wood-d);
+    box-shadow:inset 0 -3px 0 #000;
   }
-  /* drip from AC */
-  .ac-unit::after{
-    content:'';position:absolute;
-    bottom:-2vh;left:30%;width:3px;height:2vh;
-    background:linear-gradient(180deg,rgba(150,200,255,.8),transparent);
-    animation:drip 3s infinite;
+  .blinds{
+    position:absolute; inset:0;
+    background:repeating-linear-gradient(180deg,
+      rgba(220,210,180,.85) 0 4px,
+      rgba(180,170,140,.85) 4px 5px,
+      rgba(120,110,90,.85) 5px 6px,
+      transparent 6px 9px);
+    background-size:100% 9px;
   }
-  @keyframes drip{
-    0%,90%{opacity:0;height:0}
-    50%{opacity:1;height:2vh}
-    100%{opacity:0;transform:translateY(2vh)}
+  /* blinds drawn up partially */
+  .blinds.partial{
+    height:55%;top:0;
+    box-shadow:0 4px 0 #000, 0 5px 8px rgba(0,0,0,.5);
+  }
+  .blinds-cord{
+    position:absolute;right:8%;top:0;
+    width:2px;height:65%;
+    background:linear-gradient(180deg,#aaa,#666);
+    z-index:2;
+  }
+  .blinds-cord::after{
+    content:'';position:absolute;bottom:-1vh;left:-3px;
+    width:8px;height:1.2vh;background:#888;border-radius:2px;
+  }
+  /* glass reflection on exposed pane below blinds */
+  .upper-sash::after{
+    content:'';position:absolute;left:0;right:0;bottom:0;top:55%;
+    background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 40%,transparent 70%,rgba(180,200,255,.08) 100%);
+    pointer-events:none;
+  }
+  /* window sash cross divider */
+  .upper-sash .mullion{
+    position:absolute;top:55%;left:50%;
+    width:3px;bottom:0;background:#000;
+    transform:translateX(-50%);z-index:2;
   }
 
-  .ac-screen{
-    width:100%;height:100%;
-    background:#000;
-    overflow:hidden;
+  /* lower opening where the AC hangs out */
+  .ac-opening{
+    height:62%;
     position:relative;
+    background:#000;
+    border-top:none;
+  }
+
+  /* A/C unit hanging out the window */
+  .ac-unit{
+    position:absolute;
+    left:-4%; right:-4%;
+    top:-12%;
+    height:115%;
+    background:linear-gradient(180deg,#d8d4c8 0%,#a8a49a 50%,#787469 100%);
+    border:3px solid #000;
+    border-radius:2px;
+    box-shadow:
+      inset 0 -5px 0 rgba(0,0,0,.4),
+      inset 0 4px 0 rgba(255,255,255,.3),
+      0 6px 0 #000,
+      0 8px 15px rgba(0,0,0,.7);
+    cursor:pointer;
+    transition:filter .2s;
+    z-index:3;
+  }
+  .ac-unit:hover{filter:brightness(1.15)}
+  /* A/C vent grills on top */
+  .ac-unit::before{
+    content:'';position:absolute;
+    top:6%;left:6%;right:6%;height:18%;
+    background:
+      repeating-linear-gradient(90deg,#000 0 2px,#555 2px 6px);
+    border:2px solid #000;border-radius:2px;
+    box-shadow:inset 0 0 6px rgba(0,0,0,.8);
+  }
+  /* control panel + brand sticker */
+  .ac-unit::after{
+    content:'';position:absolute;
+    bottom:5%;right:6%;width:18%;height:14%;
+    background:linear-gradient(180deg,#222,#000);
+    border:1px solid #000;border-radius:2px;
+    box-shadow:0 0 0 1px #444 inset,
+      -2.2vw 0 0 -.5vh #1a1a1a,
+      -2.2vw 0 0 -.4vh #444;
+  }
+  /* the screen (camera view) - in the middle of the AC face */
+  .ac-screen{
+    position:absolute;
+    top:30%;left:8%;right:30%;bottom:24%;
+    background:#000;
     border:2px solid #1a1a1a;
+    overflow:hidden;
   }
   .ac-screen .avatar{
     width:100%;height:100%;
     display:flex;align-items:center;justify-content:center;
-    font-family:'Bebas Neue','Impact';
-    font-size:5vh;font-weight:900;color:#000;
+    font-family:'Bebas Neue';font-size:3.5vh;font-weight:900;color:#000;
     background:linear-gradient(135deg,var(--c1),var(--c2));
     text-shadow:2px 2px 0 rgba(255,255,255,.3);
   }
-  .ac-name{
-    position:absolute;
-    bottom:-3.2vh;left:0;right:0;
-    background:#000;color:var(--green-bright);
-    padding:.4vh 0;text-align:center;
-    font-family:'Bebas Neue','Impact';
-    font-size:1.6vh;letter-spacing:.1em;
-    border:2px solid var(--green);
-    border-top:none;
-    z-index:2;
+  /* drip from AC */
+  .ac-unit .drip{
+    position:absolute;bottom:-1.5vh;left:35%;width:2px;height:1.5vh;
+    background:linear-gradient(180deg,rgba(150,200,255,.9),transparent);
+    animation:drip 3s infinite;
   }
-  .ac-name span{display:block;font-size:1vh;color:#888;letter-spacing:.15em}
+  @keyframes drip{
+    0%,90%{opacity:0;height:0}
+    50%{opacity:1;height:1.5vh}
+    100%{opacity:0;transform:translateY(1.5vh)}
+  }
 
-  /* talking glow + rattle */
-  .ac-unit.talking{animation:rattle .15s infinite}
-  .ac-unit.talking .ac-screen{box-shadow:inset 0 0 30px var(--green-bright)}
-  .ac-unit.talking .ac-name{background:var(--green);color:#000;border-color:var(--neon-yellow)}
+  /* curtain peeking from one side of upper sash */
+  .curtain-peek{
+    position:absolute;top:0;bottom:0;width:22%;z-index:4;
+    background:
+      linear-gradient(90deg,var(--curtain-d) 0%,var(--curtain) 50%,var(--curtain-d) 100%);
+    box-shadow:inset -3px 0 6px rgba(0,0,0,.6);
+  }
+  .curtain-peek.left{
+    left:0;
+    background:linear-gradient(90deg,var(--curtain-d) 0%,var(--curtain) 60%,transparent 100%);
+    clip-path:polygon(0 0, 100% 8%, 90% 35%, 100% 60%, 80% 100%, 0 100%);
+  }
+  .curtain-peek.right{
+    right:0;
+    background:linear-gradient(90deg,transparent 0%,var(--curtain) 40%,var(--curtain-d) 100%);
+    clip-path:polygon(0 8%, 100% 0, 100% 100%, 20% 100%, 10% 60%, 0 35%);
+  }
+  /* curtain folds */
+  .curtain-peek::after{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,
+      rgba(0,0,0,.3) 0 2px,transparent 2px 14px);
+    mix-blend-mode:multiply;
+  }
+
+  /* nameplate below window */
+  .name-plate{
+    position:absolute; bottom:-3.4vh; left:0; right:0;
+    background:#000; color:var(--green-bright);
+    padding:.4vh 0; text-align:center;
+    font-family:'Bebas Neue'; font-size:1.5vh; letter-spacing:.1em;
+    border:2px solid var(--green); border-top:none; z-index:5;
+  }
+  .name-plate span{display:block;font-size:.95vh;color:#888;letter-spacing:.15em}
+
+  /* talking = rattle + glow */
+  .winhouse.talking .ac-unit{animation:rattle .12s infinite}
+  .winhouse.talking .ac-screen{box-shadow:inset 0 0 25px var(--green-bright)}
+  .winhouse.talking .name-plate{background:var(--green);color:#000;border-color:var(--neon-yellow)}
   @keyframes rattle{
     0%,100%{transform:translate(0,0)}
-    25%{transform:translate(-1px,1px)}
-    50%{transform:translate(1px,-1px)}
-    75%{transform:translate(-1px,-1px)}
+    25%{transform:translate(-1.5px,1px)}
+    50%{transform:translate(1.5px,-1px)}
+    75%{transform:translate(-1px,-1.5px)}
   }
 
-  /* AC unit positions */
-  #ac1{ top:9%; left:2%; width:14%; aspect-ratio:16/10 }
-  #ac2{ top:9%; left:18%; width:14%; aspect-ratio:16/10 }
-  #ac3{ top:9%; left:34%; width:14%; aspect-ratio:16/10 }
+  /* "on big screen" indicator */
+  .winhouse.live-now::before{
+    content:'ON THE BIG SCREEN';
+    position:absolute;top:-2vh;left:50%;transform:translateX(-50%);
+    background:var(--neon-pink);color:#000;
+    font-family:'Bebas Neue';font-size:1.2vh;letter-spacing:.1em;
+    padding:.2vh .6vw;border:2px solid #000;
+    box-shadow:2px 2px 0 #000;
+    z-index:10;
+    white-space:nowrap;
+    animation:flash .8s infinite alternate;
+  }
+  @keyframes flash{from{opacity:1}to{opacity:.5}}
 
-  /* ---------- MAIN WINDOW (big window of the building) ---------- */
-  .window-frame{
+  /* WINDOW positions */
+  #winhouse1{ top:7.5%; left:1.5%; width:15%; height:25% }
+  #winhouse2{ top:7.5%; left:17.5%; width:15%; height:25% }
+  #winhouse3{ top:7.5%; left:33.5%; width:15%; height:25% }
+
+  /* ---------- LIVING ROOM WINDOW (main reaction) ---------- */
+  .livingroom{
     position:absolute;
-    top:30%; left:2%;
-    width:62%; height:52%;
+    top:35%; left:2%;
+    width:62%; height:48%;
     z-index:6;
+  }
+  /* outer wall frame with deep window casing */
+  .lr-frame{
+    position:absolute; inset:0;
     background:#1a0f08;
-    border:6px solid #000;
+    border:8px solid var(--wood-d);
     box-shadow:
-      inset 0 0 0 4px #6b4226,
-      inset 0 0 0 8px #000,
-      12px 12px 0 #000,
-      12px 12px 30px rgba(0,0,0,.7);
-    padding:1.5vh;
+      inset 0 0 0 5px var(--wood),
+      inset 0 0 0 10px var(--wood-d),
+      14px 14px 0 #000,
+      14px 14px 35px rgba(0,0,0,.75);
   }
-  /* window cross frame */
-  .window-frame::before, .window-frame::after{
-    content:'';position:absolute;background:#000;z-index:3;pointer-events:none;
-  }
-  .window-frame::before{top:50%;left:0;right:0;height:6px;transform:translateY(-50%)}
-  .window-frame::after{top:0;bottom:0;left:50%;width:6px;transform:translateX(-50%)}
-  .window-frame .pane-overlay{
-    position:absolute;inset:1.5vh;z-index:4;pointer-events:none;
-    background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 30%,transparent 70%,rgba(255,255,255,.04) 100%);
-  }
-  .window-frame iframe{width:100%;height:100%;border:0;display:block;background:#000}
-  .window-label{
-    position:absolute;top:-3vh;left:1vh;
-    background:var(--neon-yellow);color:#000;
-    font-family:'Bebas Neue','Impact';
-    font-size:2vh;letter-spacing:.12em;
-    padding:.4vh 1vw;
+  /* decorative top cornice */
+  .lr-cornice{
+    position:absolute;top:-3vh;left:-2%;right:-2%;height:3vh;
+    background:linear-gradient(180deg,var(--wood-l) 0%,var(--wood) 50%,var(--wood-d) 100%);
     border:3px solid #000;
+    box-shadow:6px 6px 0 #000;
+    z-index:7;
+  }
+  .lr-cornice::after{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,
+      transparent 0 3vh,
+      rgba(0,0,0,.3) 3vh calc(3vh + 2px));
+  }
+
+  /* curtains framing the window from the inside */
+  .lr-curtain{
+    position:absolute;top:0;bottom:0;width:18%;z-index:8;
+    pointer-events:none;
+  }
+  .lr-curtain.left{left:0;
+    background:linear-gradient(90deg,var(--curtain-d) 0%,var(--curtain) 35%,transparent 100%);
+    clip-path:polygon(0 0, 100% 5%, 75% 25%, 100% 45%, 70% 65%, 100% 85%, 80% 100%, 0 100%);
+  }
+  .lr-curtain.right{right:0;
+    background:linear-gradient(90deg,transparent 0%,var(--curtain) 65%,var(--curtain-d) 100%);
+    clip-path:polygon(0 5%, 100% 0, 100% 100%, 20% 100%, 30% 85%, 0 65%, 30% 45%, 0 25%);
+  }
+  .lr-curtain::after{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,
+      rgba(0,0,0,.35) 0 3px,transparent 3px 18px);
+    mix-blend-mode:multiply;
+  }
+  /* curtain rod */
+  .lr-rod{
+    position:absolute;top:-1vh;left:-3%;right:-3%;height:1.2vh;z-index:9;
+    background:linear-gradient(180deg,#aaa 0%,#666 50%,#333 100%);
+    border:2px solid #000;border-radius:.8vh;
+  }
+  .lr-rod::before, .lr-rod::after{
+    content:'';position:absolute;top:-30%;width:1.6vh;height:1.6vh;
+    background:radial-gradient(circle at 30% 30%,#bbb,#444);
+    border:2px solid #000;border-radius:50%;
+  }
+  .lr-rod::before{left:-1.6vh}
+  .lr-rod::after{right:-1.6vh}
+
+  /* window sill at the bottom inside */
+  .lr-sill{
+    position:absolute;bottom:-1.5vh;left:-3%;right:-3%;height:2.2vh;z-index:9;
+    background:linear-gradient(180deg,var(--wood-l) 0%,var(--wood) 50%,var(--wood-d) 100%);
+    border:3px solid #000;
+    box-shadow:6px 6px 0 #000;
+  }
+
+  /* plant on the sill */
+  .plant{
+    position:absolute; bottom:.5vh; left:6%; z-index:10;
+    width:5vh; height:5vh;
+    pointer-events:none;
+  }
+  .plant .pot{
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:80%;height:40%;
+    background:linear-gradient(180deg,#8a4a28 0%,#5a2818 100%);
+    border:2px solid #000;border-radius:2px 2px 8px 8px;
+  }
+  .plant .leaves{
+    position:absolute;bottom:35%;left:50%;transform:translateX(-50%);
+    font-size:5vh;line-height:1;
+    text-shadow:2px 2px 0 #000;
+  }
+  /* lamp on right side of sill */
+  .lamp{
+    position:absolute;bottom:.5vh;right:8%;z-index:10;
+    width:4vh;height:6vh;pointer-events:none;
+  }
+  .lamp .shade{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:100%;height:50%;
+    background:linear-gradient(180deg,#d4a44a 0%,#a87a28 100%);
+    border:2px solid #000;
+    clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);
+    box-shadow:inset 0 0 8px var(--neon-yellow);
+  }
+  .lamp .base{
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:30%;height:45%;background:#2a2a2a;border:2px solid #000;
+  }
+  .lamp .stand{
+    position:absolute;top:48%;left:50%;transform:translateX(-50%);
+    width:8%;height:15%;background:#444;border:1px solid #000;
+  }
+  /* warm glow from lamp */
+  .lamp::after{
+    content:'';position:absolute;top:-1vh;left:-50%;width:200%;height:80%;
+    background:radial-gradient(ellipse,rgba(255,225,74,.25),transparent 70%);
+    pointer-events:none;
+  }
+
+  /* sleeping cat silhouette in corner */
+  .cat{
+    position:absolute;bottom:1vh;left:35%;z-index:10;
+    font-size:4vh;
+    filter:drop-shadow(2px 2px 0 #000);
+    pointer-events:none;
+    animation:catbreath 4s ease-in-out infinite;
+  }
+  @keyframes catbreath{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+  /* the actual screen inside */
+  .window-screen{
+    position:absolute; inset:1.5vh;
+    background:#000;
+    overflow:hidden;
+    border:2px solid #000;
+    box-shadow:inset 0 0 0 1px #333;
+  }
+  /* glass reflection over everything */
+  .glass-reflect{
+    position:absolute;inset:1.5vh;z-index:9;pointer-events:none;
+    background:linear-gradient(135deg,rgba(255,255,255,.1) 0%,transparent 28%,transparent 70%,rgba(180,200,255,.06) 100%);
+  }
+  /* window sash divider cross */
+  .lr-mullion-v{position:absolute;top:1.5vh;bottom:1.5vh;left:50%;width:5px;background:var(--wood-d);border:1px solid #000;z-index:9;transform:translateX(-50%)}
+  .lr-mullion-h{position:absolute;left:1.5vh;right:1.5vh;top:50%;height:5px;background:var(--wood-d);border:1px solid #000;z-index:9;transform:translateY(-50%)}
+
+  .window-screen iframe{width:100%;height:100%;border:0;display:block;background:#000}
+  .window-label{
+    position:absolute;top:-2.8vh;left:2vh;z-index:11;
+    background:var(--neon-yellow);color:#000;
+    font-family:'Bebas Neue';font-size:1.9vh;letter-spacing:.12em;
+    padding:.4vh 1vw;border:3px solid #000;
     box-shadow:4px 4px 0 #000;
     transform:rotate(-2deg);
-    z-index:8;
   }
 
-  /* ---------- BOOMBOX CHAT (right side) ---------- */
+  /* BIG HOST takeover view */
+  .big-host{
+    display:none;
+    width:100%;height:100%;
+    align-items:center;justify-content:center;
+    position:relative;
+    background:linear-gradient(135deg,var(--bc1,#5fd071),var(--bc2,#ffe14a));
+  }
+  .big-host.show{display:flex}
+  .big-host .bh-avatar{
+    font-family:'Bebas Neue';font-size:22vh;font-weight:900;color:#000;
+    text-shadow:6px 6px 0 rgba(255,255,255,.25),10px 10px 0 rgba(0,0,0,.4);
+  }
+  .big-host .bh-name{
+    position:absolute;bottom:8%;left:0;right:0;text-align:center;
+    font-family:'Bebas Neue';color:#fff;font-size:5vh;letter-spacing:.15em;
+    text-shadow:4px 4px 0 #000;
+  }
+  .big-host .bh-name small{display:block;font-size:1.8vh;color:#000;letter-spacing:.2em;margin-top:.6vh}
+  .big-host .mic-wave{
+    position:absolute;top:50%;left:8%;
+    width:6vh;height:6vh;border-radius:50%;
+    background:rgba(0,0,0,.4);
+    display:flex;align-items:center;justify-content:center;
+    font-size:3vh;
+    animation:micPulse 1s infinite;
+  }
+  @keyframes micPulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(0,0,0,.4)}
+    50%{box-shadow:0 0 0 15px rgba(0,0,0,0)}
+  }
+
+  /* back-to-reaction button */
+  .back-btn{
+    position:absolute; top:-2.8vh; right:2vh; z-index:12;
+    background:var(--neon-pink); color:#000;
+    font-family:'Bebas Neue';font-size:1.6vh;letter-spacing:.1em;
+    padding:.4vh 1vw;border:3px solid #000;
+    box-shadow:3px 3px 0 #000; cursor:pointer;
+    transform:rotate(2deg);
+    display:none;
+  }
+  .back-btn.show{display:block}
+  .back-btn:hover{background:var(--neon-yellow)}
+
+  /* picture frames on the brick wall around the window */
+  .pic{
+    position:absolute; z-index:5;
+    background:#f4e8d0;
+    border:3px solid var(--wood-d);
+    box-shadow:
+      inset 0 0 0 4px #fff,
+      inset 0 0 0 6px var(--wood-d),
+      4px 4px 0 #000;
+    display:flex;align-items:center;justify-content:center;
+    font-size:3vh;
+  }
+  .pic small{
+    position:absolute;bottom:-2.4vh;left:0;right:0;text-align:center;
+    font-family:'Permanent Marker';color:#000;font-size:1vh;
+    background:#f4e8d0;padding:.2vh;border:2px solid #000;
+    transform:rotate(-2deg);
+  }
+
+  /* ---------- POSTERS ---------- */
+  .poster{
+    position:absolute;z-index:5;
+    background:#f5e6c8;border:2px solid #000;
+    padding:.6vh .8vw;
+    font-family:'Permanent Marker';color:#000;
+    font-size:1.4vh;box-shadow:3px 3px 0 #000;line-height:1.2;
+  }
+  .poster small{display:block;font-family:'Inter';font-size:1vh;color:#444;font-weight:700}
+
+  /* ---------- STOOP (pizza box + soda CTA) ---------- */
+  .stoop{
+    position:absolute;bottom:11%;left:2%;
+    z-index:7;width:62%;height:17%;
+    display:flex;gap:1vw;align-items:flex-start;
+  }
+  .pizza-box{
+    background:#c8954a;border:3px solid #000;width:38%;
+    padding:.8vh 1vw;
+    box-shadow:inset 0 -3px 0 rgba(0,0,0,.3),6px 6px 0 #000;
+    transform:rotate(-1.5deg);position:relative;
+  }
+  .pizza-box::before{
+    content:'TOPIC ON DECK';
+    position:absolute;top:-1vh;right:1vw;
+    background:var(--neon-pink);color:#000;
+    font-family:'Bebas Neue';font-size:1.3vh;letter-spacing:.1em;
+    padding:.2vh .6vw;border:2px solid #000;transform:rotate(3deg);
+  }
+  .pizza-box h4{
+    font-family:'Permanent Marker';font-size:2.2vh;color:#000;
+    line-height:1;margin-bottom:.4vh;
+  }
+  .pizza-box p{font-size:1.2vh;color:#3a1a08;font-weight:700}
+  .soda-cta{
+    flex:1;background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 100%);
+    border:3px solid #000;padding:1vh 1.2vw;
+    transform:rotate(1deg);box-shadow:6px 6px 0 #000;cursor:pointer;
+    position:relative;animation:bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce{0%,100%{transform:rotate(1deg) translateY(0)}50%{transform:rotate(1deg) translateY(-3px)}}
+  .soda-cta b{
+    display:block;font-family:'Permanent Marker';
+    font-size:2.2vh;color:#fff;text-shadow:2px 2px 0 #000;
+    line-height:1;margin-bottom:.4vh;
+  }
+  .soda-cta span{display:block;font-size:1.2vh;color:var(--neon-yellow);font-weight:700;text-shadow:1px 1px 0 #000}
+  .soda-cta::after{
+    content:'TAP IN';position:absolute;top:-1.2vh;right:-1vw;
+    background:var(--neon-yellow);color:#000;
+    font-family:'Bebas Neue';font-size:1.5vh;letter-spacing:.1em;
+    padding:.3vh .6vw;border:2px solid #000;
+    transform:rotate(8deg);box-shadow:3px 3px 0 #000;
+  }
+
+  /* ---------- BOOMBOX CHAT ---------- */
   .boombox{
-    position:absolute;
-    top:9%;right:1.5%;
-    width:24%;height:78%;
-    z-index:7;
+    position:absolute;top:7.5%;right:1.5%;
+    width:24%;height:78%;z-index:7;
     background:linear-gradient(180deg,#2a2a2a 0%,#1a1a1a 50%,#0f0f0f 100%);
-    border:4px solid #000;
-    border-radius:8px;
+    border:4px solid #000;border-radius:8px;
     box-shadow:
       inset 0 4px 0 rgba(255,255,255,.08),
       inset 0 -4px 0 rgba(0,0,0,.5),
-      10px 10px 0 #000,
-      10px 10px 25px rgba(0,0,0,.7);
-    display:flex;flex-direction:column;
-    overflow:hidden;
+      10px 10px 0 #000,10px 10px 25px rgba(0,0,0,.7);
+    display:flex;flex-direction:column;overflow:hidden;
   }
-  /* boombox handle */
   .boombox::before{
-    content:'';position:absolute;
-    top:-2vh;left:30%;right:30%;height:2vh;
-    background:#1a1a1a;
-    border:3px solid #000;border-bottom:none;
+    content:'';position:absolute;top:-2vh;left:30%;right:30%;height:2vh;
+    background:#1a1a1a;border:3px solid #000;border-bottom:none;
     border-radius:50% 50% 0 0 / 100% 100% 0 0;
   }
-  /* speaker grills decoration */
   .speaker{
     width:5vh;height:5vh;border-radius:50%;
     background:radial-gradient(circle,#0a0a0a 0%,#000 40%,#1a1a1a 60%,#000 100%);
     border:3px solid #000;
     box-shadow:inset 0 0 10px rgba(0,0,0,.8),inset 0 0 0 2px #333;
-    position:relative;
-    flex-shrink:0;
+    position:relative;flex-shrink:0;
   }
   .speaker::before{
-    content:'';position:absolute;inset:15%;
-    border-radius:50%;
+    content:'';position:absolute;inset:15%;border-radius:50%;
     background:repeating-radial-gradient(circle,#000 0 2px,#222 2px 4px);
   }
   .speaker.pulse{animation:speakerPulse .3s infinite alternate}
   @keyframes speakerPulse{from{transform:scale(1)}to{transform:scale(1.05)}}
-
   .boombox-top{
     display:flex;align-items:center;justify-content:space-between;
     padding:1.2vh 1vw .8vh;
@@ -333,22 +614,17 @@
     border-bottom:2px solid #000;
   }
   .boombox-title{
-    font-family:'Bebas Neue','Impact';
-    color:var(--green-bright);
-    font-size:2vh;letter-spacing:.12em;
-    text-shadow:2px 2px 0 #000;
+    font-family:'Bebas Neue';color:var(--green-bright);
+    font-size:2vh;letter-spacing:.12em;text-shadow:2px 2px 0 #000;
   }
   .boombox-display{
-    margin:.8vh 1vw;
-    background:#0a1a0a;
-    border:3px solid #000;
-    border-radius:3px;
+    margin:.8vh 1vw;background:#0a1a0a;
+    border:3px solid #000;border-radius:3px;
     padding:.6vh .8vw;
     display:flex;align-items:center;justify-content:space-between;
     box-shadow:inset 0 0 10px rgba(0,255,0,.2);
     font-family:'Courier New',monospace;
-    color:var(--green-bright);
-    font-size:1.3vh;font-weight:700;
+    color:var(--green-bright);font-size:1.3vh;font-weight:700;
     text-shadow:0 0 8px var(--green-bright);
   }
   .boombox-display .eq{display:flex;gap:2px;align-items:flex-end;height:1.5vh}
@@ -362,21 +638,14 @@
   .boombox-display .eq span:nth-child(4){animation-delay:.3s}
   .boombox-display .eq span:nth-child(5){animation-delay:.4s}
   @keyframes eq{from{height:20%}to{height:100%}}
-
   .chat-feed{
-    flex:1;min-height:0;
-    padding:.6vh 1vw;
-    overflow:hidden;
+    flex:1;min-height:0;padding:.6vh 1vw;overflow:hidden;
     display:flex;flex-direction:column;gap:.5vh;
     mask-image:linear-gradient(180deg,transparent 0%,#000 8%,#000 100%);
   }
-  .msg{
-    font-size:1.3vh;line-height:1.35;
-    animation:msgIn .4s ease-out;
-    color:#ddd;
-  }
+  .msg{font-size:1.3vh;line-height:1.35;animation:msgIn .4s ease-out;color:#ddd}
   @keyframes msgIn{from{opacity:0;transform:translateX(15px)}to{opacity:1;transform:translateX(0)}}
-  .msg .u{font-family:'Bebas Neue','Impact';font-size:1.4vh;letter-spacing:.05em;margin-right:.4vw}
+  .msg .u{font-family:'Bebas Neue';font-size:1.4vh;letter-spacing:.05em;margin-right:.4vw}
   .msg.og .u{color:var(--neon-yellow)}
   .msg.og .u::before{content:'★ '}
   .msg.mod .u{color:var(--green-bright)}
@@ -387,48 +656,36 @@
   .msg.crew .u::before{content:'🎙 '}
   .msg.tip{
     background:linear-gradient(135deg,var(--neon-yellow),#ff9500);
-    color:#000;font-weight:800;
-    padding:.6vh .8vw;
-    border:2px solid #000;
-    box-shadow:3px 3px 0 #000;
-    border-radius:3px;
+    color:#000;font-weight:800;padding:.6vh .8vw;
+    border:2px solid #000;box-shadow:3px 3px 0 #000;border-radius:3px;
   }
-  .msg.tip .amt{display:block;font-family:'Bebas Neue','Impact';font-size:1.4vh;letter-spacing:.1em}
+  .msg.tip .amt{display:block;font-family:'Bebas Neue';font-size:1.4vh;letter-spacing:.1em}
   .msg.tip .u{color:#000}
-
   .speakers-row{
     display:flex;justify-content:space-around;align-items:center;
-    padding:.8vh 1vw;
-    background:linear-gradient(180deg,#1a1a1a,#000);
+    padding:.8vh 1vw;background:linear-gradient(180deg,#1a1a1a,#000);
     border-top:2px solid #000;
   }
   .knob{
     width:3vh;height:3vh;border-radius:50%;
     background:radial-gradient(circle at 30% 30%,#666,#222);
-    border:2px solid #000;
-    position:relative;
+    border:2px solid #000;position:relative;
   }
   .knob::after{
-    content:'';position:absolute;
-    top:10%;left:50%;width:2px;height:30%;
-    background:var(--green-bright);
-    transform-origin:bottom center;
+    content:'';position:absolute;top:10%;left:50%;width:2px;height:30%;
+    background:var(--green-bright);transform-origin:bottom center;
     transform:translateX(-50%) rotate(var(--rot,30deg));
   }
 
-  /* ---------- STREET-LEVEL TICKER (sidewalk) ---------- */
+  /* ---------- SIDEWALK + FANBOX TICKER ---------- */
   .sidewalk{
-    position:absolute;
-    bottom:0;left:0;right:0;
+    position:absolute;bottom:0;left:0;right:0;
     height:9%;z-index:8;
-    background:
-      linear-gradient(180deg,var(--concrete) 0%,#2a2a2a 100%);
+    background:linear-gradient(180deg,var(--concrete) 0%,#2a2a2a 100%);
     border-top:4px solid #000;
     box-shadow:inset 0 4px 0 rgba(255,255,255,.05);
-    display:flex;align-items:stretch;
     overflow:hidden;
   }
-  /* sidewalk cracks */
   .sidewalk::before{
     content:'';position:absolute;inset:0;pointer-events:none;
     background:
@@ -437,169 +694,132 @@
       linear-gradient(180deg,rgba(0,0,0,.3) 0 1px,transparent 1px 100%);
     background-size:100% 100%, 100% 100%, 100% 33%;
   }
-  .ticker-tag{
-    background:var(--green);color:#000;
-    padding:0 1.5vw;
-    display:flex;align-items:center;
-    font-family:'Bebas Neue','Impact';
-    font-size:2.4vh;letter-spacing:.15em;
-    border-right:4px solid #000;
-    text-shadow:1px 1px 0 var(--neon-yellow);
-    flex-shrink:0;
-    z-index:2;
-  }
-  .ticker-tag::before{content:'⚠ ';color:#000}
+  /* TICKER TRACK - full width, scrolls BEHIND the fanbox */
   .ticker-track{
-    flex:1;display:flex;gap:4vw;
-    align-items:center;
-    animation:scroll 35s linear infinite;
+    position:absolute; inset:0;
+    display:flex;align-items:center;gap:4vw;
     white-space:nowrap;
-    font-family:'Bebas Neue','Impact';
-    font-size:2.2vh;letter-spacing:.08em;
-    color:#fff;
-    padding-left:2vw;
-    z-index:2;
+    font-family:'Bebas Neue';font-size:2.1vh;letter-spacing:.08em;
+    color:#fff;padding-left:2vw;
+    animation:scroll 38s linear infinite;
+    z-index:1;
   }
   .ticker-track b{color:var(--neon-yellow);margin-right:.4vw}
   .ticker-track span{color:var(--green-bright);font-size:1.6vh}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  /* ---------- PIZZA BOX / SODA CAN UP NEXT ---------- */
-  .stoop{
-    position:absolute;
-    bottom:11%; left:2%;
-    z-index:7;
-    width:62%; height:18%;
-    display:flex;gap:1vw;align-items:flex-start;
-  }
-  .pizza-box{
-    background:#c8954a;
+  /* FANBOX (A/C unit replacing the "Word on the Block" label) */
+  .fanbox{
+    position:absolute;left:0;top:-1.5vh;bottom:-1vh;
+    width:21%; z-index:3;
+    background:linear-gradient(180deg,#c8c4b8 0%,#a8a49a 60%,#787469 100%);
     border:3px solid #000;
-    width:38%;
-    padding:.8vh 1vw;
     box-shadow:
-      inset 0 -3px 0 rgba(0,0,0,.3),
-      6px 6px 0 #000;
-    transform:rotate(-1.5deg);
-    position:relative;
+      inset 0 -4px 0 rgba(0,0,0,.4),
+      inset 0 4px 0 rgba(255,255,255,.3),
+      6px 0 0 #000,6px 6px 15px rgba(0,0,0,.7);
+    display:flex;align-items:center;gap:.6vw;
+    padding:0 .8vw 0 .5vw;
+    clip-path:polygon(0 0, 100% 0, calc(100% - 1.5vh) 100%, 0 100%);
   }
-  .pizza-box::before{
-    content:'TOPIC ON DECK';
-    position:absolute;top:-1vh;right:1vw;
-    background:var(--neon-pink);color:#000;
-    font-family:'Bebas Neue','Impact';
-    font-size:1.4vh;letter-spacing:.1em;
-    padding:.2vh .6vw;
+  /* fan grille circle */
+  .fan-grille{
+    width:5.5vh;height:5.5vh;border-radius:50%;
+    background:radial-gradient(circle,#1a1a1a 0%,#0a0a0a 60%,#000 100%);
+    border:3px solid #000;
+    position:relative;flex-shrink:0;
+    box-shadow:inset 0 0 8px rgba(0,0,0,.9),inset 0 0 0 2px #444;
+    overflow:hidden;
+  }
+  /* spinning fan blades */
+  .fan-blades{
+    position:absolute;inset:10%;border-radius:50%;
+    background:
+      conic-gradient(
+        from 0deg,
+        rgba(180,180,180,.4) 0deg 30deg,
+        transparent 30deg 90deg,
+        rgba(180,180,180,.4) 90deg 120deg,
+        transparent 120deg 180deg,
+        rgba(180,180,180,.4) 180deg 210deg,
+        transparent 210deg 270deg,
+        rgba(180,180,180,.4) 270deg 300deg,
+        transparent 300deg 360deg
+      );
+    animation:fanspin .2s linear infinite;
+    filter:blur(.5px);
+  }
+  .fan-blades::after{
+    content:'';position:absolute;top:50%;left:50%;
+    width:18%;height:18%;border-radius:50%;
+    background:radial-gradient(circle,#666,#222);
+    border:1px solid #000;
+    transform:translate(-50%,-50%);
+  }
+  /* fan grille bars over blades */
+  .fan-grille::before{
+    content:'';position:absolute;inset:8%;border-radius:50%;
+    background:
+      repeating-conic-gradient(from 0deg,
+        rgba(0,0,0,.45) 0deg 1deg,
+        transparent 1deg 18deg);
+    pointer-events:none;
+    z-index:2;
+  }
+  .fan-grille::after{
+    content:'';position:absolute;inset:8%;border-radius:50%;
     border:2px solid #000;
-    transform:rotate(3deg);
+    pointer-events:none;z-index:2;
   }
-  .pizza-box h4{
-    font-family:'Permanent Marker','Impact',cursive;
-    font-size:2.4vh;color:#000;
-    line-height:1;
-    margin-bottom:.4vh;
-  }
-  .pizza-box p{
-    font-size:1.3vh;color:#3a1a08;font-weight:700;
-  }
+  @keyframes fanspin{to{transform:rotate(360deg)}}
 
-  .soda-cta{
+  .fan-label{
+    font-family:'Bebas Neue';color:#000;
+    font-size:2vh;line-height:.9;letter-spacing:.08em;
+    text-shadow:1px 1px 0 var(--neon-yellow);
+    z-index:2;
     flex:1;
-    background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 100%);
-    border:3px solid #000;
-    padding:1vh 1.2vw;
-    transform:rotate(1deg);
-    box-shadow:6px 6px 0 #000;
-    cursor:pointer;
-    position:relative;
-    animation:bounce 2s ease-in-out infinite;
   }
-  @keyframes bounce{
-    0%,100%{transform:rotate(1deg) translateY(0)}
-    50%{transform:rotate(1deg) translateY(-3px)}
+  .fan-label b{
+    display:block;color:#c81e3a;font-size:1.2vh;letter-spacing:.18em;margin-bottom:.2vh;
   }
-  .soda-cta b{
-    display:block;
-    font-family:'Permanent Marker','Impact',cursive;
-    font-size:2.4vh;color:#fff;
-    text-shadow:2px 2px 0 #000;
-    line-height:1;
-    margin-bottom:.4vh;
-  }
-  .soda-cta span{
-    display:block;font-size:1.3vh;color:var(--neon-yellow);
-    font-weight:700;text-shadow:1px 1px 0 #000;
-  }
-  .soda-cta::after{
-    content:'TAP IN';
-    position:absolute;top:-1.2vh;right:-1vw;
-    background:var(--neon-yellow);color:#000;
-    font-family:'Bebas Neue','Impact';
-    font-size:1.6vh;letter-spacing:.1em;
-    padding:.3vh .6vw;
-    border:2px solid #000;
-    transform:rotate(8deg);
-    box-shadow:3px 3px 0 #000;
+  /* small vent slots on side of fanbox */
+  .fan-label::after{
+    content:'';position:absolute;right:1.8vh;top:15%;bottom:15%;width:.5vw;
+    background:repeating-linear-gradient(0deg,#000 0 2px,transparent 2px 6px);
+    opacity:.7;
   }
 
-  /* ---------- POSTER / STAT WALL ---------- */
-  .poster{
-    position:absolute;
-    z-index:5;
-    background:#f5e6c8;
-    border:2px solid #000;
-    padding:.6vh .8vw;
-    font-family:'Permanent Marker','Impact',cursive;
-    color:#000;
-    font-size:1.4vh;
-    box-shadow:3px 3px 0 #000;
-    line-height:1.2;
-  }
-  .poster small{display:block;font-family:'Inter';font-size:1vh;color:#444;font-weight:700}
-
-  /* ---------- ALERT (someone runs by yelling) ---------- */
-  .holler{
-    position:absolute;
-    top:30%; left:-30%;
-    z-index:20;
-    background:var(--neon-pink);
-    color:#000;
-    border:3px solid #000;
-    padding:1.2vh 1.5vw;
-    font-family:'Permanent Marker','Impact',cursive;
-    font-size:2.2vh;
-    box-shadow:6px 6px 0 #000;
-    transform:rotate(-4deg);
-    transition:left .5s cubic-bezier(.2,.9,.3,1.3);
-    max-width:30%;
-  }
-  .holler.show{left:3%}
-  .holler small{
-    display:block;font-family:'Inter';font-size:1.2vh;color:#000;font-weight:800;margin-top:.2vh
-  }
-
-  /* ---------- FLOATING SMOKE / VAPOR ---------- */
-  .smoke{position:absolute;bottom:8%;pointer-events:none;z-index:9;font-size:3vh;opacity:.4}
-
-  /* trash can decoration */
+  /* trash can */
   .trash{
-    position:absolute;
-    bottom:9%; right:26%;
-    width:5vw; height:8vh;
-    z-index:6;
+    position:absolute;bottom:9.5%;right:26%;
+    width:5vw;height:8vh;z-index:6;
     background:linear-gradient(180deg,#3a3a3a 0%,#1a1a1a 100%);
-    border:3px solid #000;
-    border-radius:6px 6px 2px 2px;
+    border:3px solid #000;border-radius:6px 6px 2px 2px;
   }
   .trash::before{
     content:'';position:absolute;top:-1vh;left:-5%;right:-5%;height:1.2vh;
     background:#1a1a1a;border:3px solid #000;border-radius:50% 50% 0 0/100% 100% 0 0;
   }
   .trash::after{
-    content:'';position:absolute;top:20%;left:10%;right:10%;
-    height:60%;
+    content:'';position:absolute;top:20%;left:10%;right:10%;height:60%;
     background:repeating-linear-gradient(0deg,transparent 0 6px,rgba(0,0,0,.4) 6px 8px);
   }
+
+  /* smoke */
+  .smoke{position:absolute;bottom:8%;pointer-events:none;z-index:9;font-size:3vh;opacity:.4}
+
+  /* holler alert */
+  .holler{
+    position:absolute;top:36%;left:-30%;z-index:20;
+    background:var(--neon-pink);color:#000;
+    border:3px solid #000;padding:1.2vh 1.5vw;
+    font-family:'Permanent Marker';font-size:2.2vh;
+    box-shadow:6px 6px 0 #000;transform:rotate(-4deg);
+    transition:left .5s cubic-bezier(.2,.9,.3,1.3);max-width:30%;
+  }
+  .holler.show{left:3%}
+  .holler small{display:block;font-family:'Inter';font-size:1.2vh;color:#000;font-weight:800;margin-top:.2vh}
 
 </style>
 </head>
@@ -607,19 +827,19 @@
 <div class="stage">
   <div class="obs">
 
-    <!-- spray paint splatters -->
+    <!-- splatters -->
     <div class="splatter" style="top:5%;left:30%;background:var(--neon-pink)"></div>
     <div class="splatter" style="top:50%;left:65%;background:var(--neon-yellow);width:5vh;height:5vh"></div>
-    <div class="splatter" style="bottom:15%;left:10%;background:var(--green-bright);width:6vh;height:6vh"></div>
+    <div class="splatter" style="bottom:18%;left:10%;background:var(--green-bright);width:6vh;height:6vh"></div>
 
-    <!-- GRAFFITI LOGO (sprayed on the wall) -->
+    <!-- GRAFFITI -->
     <div class="graffiti">
       GANG
       <span class="small">by the green block</span>
       <span class="tag">EST. '24</span>
     </div>
 
-    <!-- FIRE ESCAPE TOP BAR -->
+    <!-- TOP BAR -->
     <div class="fire-escape">
       <div class="live-tag">LIVE ON THE BLOCK</div>
       <div class="stat"><span id="viewers">3,217</span><small>HEADS</small></div>
@@ -627,44 +847,109 @@
       <div class="stat"><span id="time">02:14:08</span><small>ON AIR</small></div>
     </div>
 
-    <!-- A/C UNIT CAMS -->
-    <div class="ac-unit talking" id="ac1" style="--c1:#5fd071;--c2:#ffe14a">
-      <div class="ac-screen">
-        <div class="avatar">D</div>
+    <!-- ====== 3 WINDOW HOUSINGS WITH A/C HANGING OUT ====== -->
+    <div class="winhouse talking" id="winhouse1" onclick="takeWindow(1)">
+      <div class="upper-sash">
+        <div class="curtain-peek left"></div>
+        <div class="blinds partial"></div>
+        <div class="blinds-cord"></div>
+        <div class="mullion"></div>
       </div>
-      <div class="ac-name">DEEZY<span>HOST · 4B</span></div>
-    </div>
-
-    <div class="ac-unit" id="ac2" style="--c1:#ff3ea8;--c2:#9b59ff">
-      <div class="ac-screen">
-        <div class="avatar">M</div>
+      <div class="ac-opening">
+        <div class="ac-unit" style="--c1:#5fd071;--c2:#ffe14a">
+          <div class="ac-screen"><div class="avatar">D</div></div>
+          <div class="drip"></div>
+        </div>
       </div>
-      <div class="ac-name">MO<span>CO-HOST · 3A</span></div>
+      <div class="name-plate">DEEZY<span>HOST · 4B</span></div>
     </div>
 
-    <div class="ac-unit" id="ac3" style="--c1:#5fd0ff;--c2:#3fa34d">
-      <div class="ac-screen">
-        <div class="avatar">T</div>
+    <div class="winhouse" id="winhouse2" onclick="takeWindow(2)">
+      <div class="upper-sash">
+        <div class="blinds partial" style="height:40%"></div>
+        <div class="blinds-cord"></div>
+        <div class="curtain-peek right"></div>
+        <div class="mullion"></div>
       </div>
-      <div class="ac-name">TINY<span>GUEST · STOOP</span></div>
+      <div class="ac-opening">
+        <div class="ac-unit" style="--c1:#ff3ea8;--c2:#9b59ff">
+          <div class="ac-screen"><div class="avatar">M</div></div>
+          <div class="drip" style="left:60%;animation-delay:1.5s"></div>
+        </div>
+      </div>
+      <div class="name-plate">MO<span>CO-HOST · 3A</span></div>
     </div>
 
-    <!-- BIG WINDOW (main content) -->
-    <div class="window-frame">
-      <div class="window-label">📺 ON THE BLOCK</div>
-      <div class="pane-overlay"></div>
-      <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1" allow="autoplay" allowfullscreen></iframe>
+    <div class="winhouse" id="winhouse3" onclick="takeWindow(3)">
+      <div class="upper-sash">
+        <div class="curtain-peek left"></div>
+        <div class="curtain-peek right"></div>
+        <div class="blinds partial" style="height:70%"></div>
+        <div class="blinds-cord"></div>
+        <div class="mullion"></div>
+      </div>
+      <div class="ac-opening">
+        <div class="ac-unit" style="--c1:#5fd0ff;--c2:#3fa34d">
+          <div class="ac-screen"><div class="avatar">T</div></div>
+          <div class="drip" style="left:50%;animation-delay:.8s"></div>
+        </div>
+      </div>
+      <div class="name-plate">TINY<span>GUEST · STOOP</span></div>
     </div>
 
-    <!-- POSTERS taped on the wall -->
-    <div class="poster" style="top:10%; left:50%; transform:rotate(4deg)">
+    <!-- ====== LIVING ROOM WINDOW (MAIN SCREEN) ====== -->
+    <div class="livingroom">
+      <div class="window-label">📺 ON THE BIG SCREEN</div>
+      <button class="back-btn" id="backBtn" onclick="backToStream()">◀ BACK TO STREAM</button>
+
+      <div class="lr-frame">
+        <div class="lr-cornice"></div>
+        <div class="lr-rod"></div>
+
+        <div class="window-screen" id="bigScreen">
+          <iframe id="reactionIframe" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1" allow="autoplay" allowfullscreen></iframe>
+          <div class="big-host" id="bigHost">
+            <div class="bh-avatar" id="bhAvatar">D</div>
+            <div class="mic-wave">🎙</div>
+            <div class="bh-name" id="bhName">DEEZY<small>HOST · 4B</small></div>
+          </div>
+        </div>
+
+        <div class="lr-mullion-v"></div>
+        <div class="lr-mullion-h"></div>
+        <div class="glass-reflect"></div>
+
+        <div class="lr-curtain left"></div>
+        <div class="lr-curtain right"></div>
+
+        <div class="lr-sill"></div>
+
+        <div class="plant">
+          <div class="leaves">🌿</div>
+          <div class="pot"></div>
+        </div>
+        <div class="lamp">
+          <div class="shade"></div>
+          <div class="stand"></div>
+          <div class="base"></div>
+        </div>
+        <div class="cat">🐈‍⬛</div>
+      </div>
+    </div>
+
+    <!-- picture frames hung on the brick wall around it -->
+    <div class="pic" style="top:38%;left:65%;width:5vh;height:6vh;transform:rotate(4deg)">🏆<small>BLOCK CHAMPS '23</small></div>
+    <div class="pic" style="top:50%;left:65%;width:6vh;height:4.5vh;transform:rotate(-3deg)">👨‍👩‍👦<small>FAMILY</small></div>
+
+    <!-- POSTERS -->
+    <div class="poster" style="top:11%; left:50%; transform:rotate(4deg)">
       🍕 SLICE NIGHT FRI<small>$2 a slice · BYO drink</small>
     </div>
-    <div class="poster" style="top:18%; left:62%; transform:rotate(-3deg);background:#ffb84a">
+    <div class="poster" style="top:19%; left:62%; transform:rotate(-3deg);background:#ffb84a">
       LOST CAT — MIDNIGHT<small>black, no collar · call 4B</small>
     </div>
 
-    <!-- STOOP: pizza box topic + green soda can CTA -->
+    <!-- STOOP -->
     <div class="stoop">
       <div class="pizza-box">
         <h4 id="topicTitle">Beef in the group chat</h4>
@@ -697,22 +982,18 @@
       </div>
     </div>
 
-    <!-- TRASH CAN decoration -->
     <div class="trash"></div>
-
-    <!-- SMOKE -->
     <div class="smoke" style="left:15%">💨</div>
     <div class="smoke" style="left:55%">💨</div>
 
-    <!-- HOLLER ALERT (slides in like someone yelling from down the block) -->
+    <!-- HOLLER -->
     <div class="holler" id="holler">
       🗣 YO! @<span id="hollerName">bigshawn</span> just dropped <span id="hollerAmt">$20</span>!
       <small id="hollerMsg">"y'all the realest on YT"</small>
     </div>
 
-    <!-- SIDEWALK TICKER -->
+    <!-- ====== SIDEWALK TICKER (text passes BEHIND fanbox) ====== -->
     <div class="sidewalk">
-      <div class="ticker-tag">WORD ON THE BLOCK</div>
       <div class="ticker-track" id="ticker">
         <span><b>HOT:</b> Deezy almost fought a pigeon last week — clip in description</span>
         <span><b>NEW:</b> Merch drop SUNDAY · "Green Block" hoodies $40</span>
@@ -725,13 +1006,59 @@
         <span><b>SHOUT:</b> 4B's wifi finally fixed thank god</span>
         <span><b>LINK:</b> patreon.com/greenblock for the after-show</span>
       </div>
+      <!-- FANBOX A/C UNIT (sits on top, text scrolls behind) -->
+      <div class="fanbox">
+        <div class="fan-grille">
+          <div class="fan-blades"></div>
+        </div>
+        <div class="fan-label">
+          <b>BLOWING IN</b>
+          WORD ON<br>THE BLOCK
+        </div>
+      </div>
     </div>
 
   </div>
 </div>
 
 <script>
-/* ------- CHAT ------- */
+/* ----- HOST DATA ----- */
+const HOSTS = {
+  1:{letter:'D',name:'DEEZY',role:'HOST · 4B',c1:'#5fd071',c2:'#ffe14a'},
+  2:{letter:'M',name:'MO',role:'CO-HOST · 3A',c1:'#ff3ea8',c2:'#9b59ff'},
+  3:{letter:'T',name:'TINY',role:'GUEST · STOOP',c1:'#5fd0ff',c2:'#3fa34d'}
+};
+let bigScreenMode = 'reaction'; // 'reaction' or 'host'
+let activeHost = null;
+
+function takeWindow(id){
+  const h = HOSTS[id];
+  if(!h) return;
+  // hide iframe, show big host
+  document.getElementById('reactionIframe').style.display = 'none';
+  const bh = document.getElementById('bigHost');
+  bh.style.setProperty('--bc1', h.c1);
+  bh.style.setProperty('--bc2', h.c2);
+  document.getElementById('bhAvatar').textContent = h.letter;
+  document.getElementById('bhName').innerHTML = `${h.name}<small>${h.role}</small>`;
+  bh.classList.add('show');
+  document.getElementById('backBtn').classList.add('show');
+  // mark which winhouse is on-air
+  document.querySelectorAll('.winhouse').forEach(w=>w.classList.remove('live-now'));
+  document.getElementById('winhouse'+id).classList.add('live-now');
+  bigScreenMode = 'host';
+  activeHost = id;
+}
+function backToStream(){
+  document.getElementById('reactionIframe').style.display = 'block';
+  document.getElementById('bigHost').classList.remove('show');
+  document.getElementById('backBtn').classList.remove('show');
+  document.querySelectorAll('.winhouse').forEach(w=>w.classList.remove('live-now'));
+  bigScreenMode = 'reaction';
+  activeHost = null;
+}
+
+/* ----- CHAT ----- */
 const users = [
   {n:'4B_DEEZY',c:'crew'},{n:'mo_FROM_3A',c:'crew'},
   {n:'mod_unc',c:'mod'},{n:'mod_keisha',c:'mod'},
@@ -752,7 +1079,8 @@ const lines = [
   'pizza box topic was wild last week','tell Tiny stop hiding',
   'when the after show drop','subscribed today!! 🔔','🐐 🐐 🐐',
   'the AC be dripping fr','can we vote on next topic','POLL POLL POLL',
-  'rent due in 4B 😬','put the pigeon clip back up','aunty in chat heyyy 👋'
+  'rent due in 4B 😬','put the pigeon clip back up','aunty in chat heyyy 👋',
+  'put deezy on the big screen','TINY ON THE BIG SCREEN PLS','MO TAKE OVER','that fan box GO CRAZY'
 ];
 const tips = [
   {u:'bigshawn',a:'$20',m:'y\'all the realest on YT'},
@@ -766,10 +1094,9 @@ const crewLines = {
   '4B_DEEZY':['chat behave','Mo you tweakin','aye Tiny say something 😂','y\'all heard that?','💯','run it'],
   'mo_FROM_3A':['NAH','I\'m telling y\'all','Deezy ain\'t ready','😂😂😂','listen LISTEN'],
 };
-
 const feed = document.getElementById('chatFeed');
-const MAX = 11;
-function pushMsg(node){
+const MAX=11;
+function push(node){
   feed.appendChild(node);
   while(feed.children.length>MAX) feed.removeChild(feed.firstChild);
 }
@@ -779,34 +1106,29 @@ function chatLine(){
     ? crewLines[u.n][Math.floor(Math.random()*crewLines[u.n].length)]
     : lines[Math.floor(Math.random()*lines.length)];
   const d = document.createElement('div');
-  d.className = `msg ${u.c}`;
-  d.innerHTML = `<span class="u">${u.n}</span>${text}`;
-  pushMsg(d);
+  d.className=`msg ${u.c}`;
+  d.innerHTML=`<span class="u">${u.n}</span>${text}`;
+  push(d);
 }
 function tipLine(){
   const t = tips[Math.floor(Math.random()*tips.length)];
   const d = document.createElement('div');
   d.className='msg tip';
   d.innerHTML=`<span class="amt">💵 TIP · ${t.a}</span><span class="u">${t.u}</span> ${t.m}`;
-  pushMsg(d);
+  push(d);
   showHoller(t);
 }
-
 for(let i=0;i<MAX;i++) chatLine();
-setInterval(()=>{
-  if(Math.random()<0.07) tipLine();
-  else chatLine();
-},1000);
+setInterval(()=>{ Math.random()<0.07 ? tipLine() : chatLine(); }, 1000);
 
-/* ------- COUNTERS ------- */
-let v=3217, l=14200;
+/* ----- COUNTERS ----- */
+let v=3217,l=14200;
 setInterval(()=>{
   v += Math.floor(Math.random()*20)-7;
   l += Math.floor(Math.random()*5);
   document.getElementById('viewers').textContent = v.toLocaleString();
-  document.getElementById('likes').textContent = (l>=1000? (l/1000).toFixed(1)+'K' : l);
+  document.getElementById('likes').textContent = l>=1000?(l/1000).toFixed(1)+'K':l;
 },1500);
-
 let secs=8048;
 setInterval(()=>{
   secs++;
@@ -816,16 +1138,20 @@ setInterval(()=>{
   document.getElementById('time').textContent=`${h}:${m}:${s}`;
 },1000);
 
-/* ------- TALKING (which AC unit rattles) ------- */
-const acs = [document.getElementById('ac1'),document.getElementById('ac2'),document.getElementById('ac3')];
+/* ----- TALKING (rattle) ----- */
+const winhouses = [
+  document.getElementById('winhouse1'),
+  document.getElementById('winhouse2'),
+  document.getElementById('winhouse3')
+];
 setInterval(()=>{
-  acs.forEach(a=>a.classList.remove('talking'));
+  winhouses.forEach(w=>w.classList.remove('talking'));
   if(Math.random()<.85){
-    acs[Math.floor(Math.random()*3)].classList.add('talking');
+    winhouses[Math.floor(Math.random()*3)].classList.add('talking');
   }
 },1700);
 
-/* ------- HOLLER ALERT ------- */
+/* ----- HOLLER ----- */
 const hollerEl = document.getElementById('holler');
 function showHoller(t){
   document.getElementById('hollerName').textContent=t.u;
@@ -835,7 +1161,7 @@ function showHoller(t){
   setTimeout(()=>hollerEl.classList.remove('show'),5000);
 }
 
-/* ------- TOPICS rotate (pizza box) ------- */
+/* ----- TOPICS rotate ----- */
 const topics=[
   {t:'Beef in the group chat',s:'Topic 3 of 6 · the chat picked it'},
   {t:'Worst neighbors EVER',s:'Topic 4 of 6 · stories from chat'},
@@ -849,6 +1175,14 @@ setInterval(()=>{
   document.getElementById('topicTitle').textContent=topics[ti].t;
   document.getElementById('topicSub').textContent=topics[ti].s;
 },9000);
+
+/* ----- keyboard shortcuts for hosts ----- */
+document.addEventListener('keydown',e=>{
+  if(e.key==='1') takeWindow(1);
+  else if(e.key==='2') takeWindow(2);
+  else if(e.key==='3') takeWindow(3);
+  else if(e.key==='0' || e.key==='Escape') backToStream();
+});
 </script>
 </body>
 </html>
